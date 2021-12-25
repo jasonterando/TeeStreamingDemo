@@ -1,0 +1,5 @@
+.aws/data/
+src/bin/
+src/obj/
+samples/*
+!samples/sample1.jpg

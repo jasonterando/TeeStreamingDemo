@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4566:4566"
+      - "127.0.0.1:4571:4571"
+    hostname: us-east-1.localstack
+    environment:
+      - SERVICES=s3
+      - DEFAULT_REGION=us-east-1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - DATA_DIR=/opt/data
+      - USE_SSL=false
+    networks:
+      - local
+    volumes:
+      - ./.aws/startup:/docker-entrypoint-initaws.d
+      - ./.aws/data:/opt/data
+  app:
+    build: 
+       context: ./
+       dockerfile: ./Dockerfile
+    working_dir: "/app/samples"
+    depends_on:
+      - localstack
+    networks:
+      - local
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+      - "28251:28251"
+      - "44320:44320"
+    command:
+      - "server"
+      - "--launch-profile"
+      - "GenerateThumbnail-Docker"
+      - "--s3-bucket-name"
+      - "test"
+      - "--s3-service-url"
+      - "http://localstack:4566"
+    volumes:
+      - ./samples:/app/samples
+    environment:
+      AWS_REGION: "us-east-1"
+      AWS_ACCESS_KEY_ID: "test"
+      AWS_SECRET_ACCESS_KEY: "test"
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: http://+:5000;https://+:5001
+    
+networks:
+  local:
+    driver: bridge

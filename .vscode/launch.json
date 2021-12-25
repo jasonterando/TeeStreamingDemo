@@ -1,0 +1,46 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Local ASP.NET Core Demo",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-demo",
+            "program": "${workspaceFolder}/src/bin/Debug/net6.0/GenerateThumbnail.dll",
+            "args": [
+                "server",
+                "--s3-bucket-name",
+                "test",
+                "--s3-service-url",
+                "http://localhost:4566" 
+            ],
+            "env": {
+                "AWS_REGION": "us-east-1",
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "cwd": "${workspaceFolder}/src",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Console Demo",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-demo",
+            "program": "${workspaceFolder}/src/bin/Debug/net6.0/GenerateThumbnail.dll",
+            "args": [
+                "--s3-service-url",
+                "http://localhost:4566",
+                "${workspaceFolder}/samples/sample1.jpg",
+                "s3://test/foo2.jpg",
+                "${workspaceFolder}/samples/sample1-thumbnail.jpg",
+            ],
+            "env": {
+                "AWS_REGION": "us-east-1"
+            },
+            "cwd": "${workspaceFolder}/src",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        }
+    ]
+}
